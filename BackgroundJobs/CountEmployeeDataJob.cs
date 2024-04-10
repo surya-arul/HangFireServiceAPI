@@ -39,13 +39,13 @@ namespace HangFireServiceAPI.BackgroundTasks
                         if (Directory.Exists(directoryPath))
                         {
                             // To append text in file
-                            using (StreamWriter writer = File.AppendText(filePath))
+                            /*using (StreamWriter writer = File.AppendText(filePath))
                             {
                                 await writer.WriteLineAsync($"Current count of employees: {employeeCount} - [{DateTime.Now}]");
-                            }
+                            }*/
 
                             // To overwrite text in file
-                            //await File.WriteAllTextAsync(filePath, $"Current count of employees: {employeeCount} - [{DateTime.Now}]");
+                            await File.WriteAllTextAsync(filePath, $"Current count of employees: {employeeCount} - [{DateTime.Now}]");
                         }
                         else
                         {
