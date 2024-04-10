@@ -29,7 +29,7 @@ namespace HangFireServiceAPI
                     .Bind(builder.Configuration.GetSection(nameof(HangFireServiceSettings)))
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
-
+            
             builder.Services.AddOptions<ConnectionStrings>()
                 .Bind(builder.Configuration.GetSection(nameof(ConnectionStrings)))
                 .ValidateDataAnnotations()
@@ -75,15 +75,25 @@ namespace HangFireServiceAPI
 
             app.MapControllers();
 
+            // Get the hang fire settings from configuration file
+            var hangFireServiceSettings = app.Services.GetRequiredService<IOptionsMonitor<HangFireServiceSettings>>();
+
+            var monitor = hangFireServiceSettings.OnChange(config =>
+            {
+                ExecuteRecurringJob(hangFireServiceSettings);
+            });
+
             app.UseHangfireDashboard("/hangfire-dashboard");
 
-            // Get the hang fire settings from configuration file
-            var hangFireServiceSettings = app.Services.GetRequiredService<IOptionsMonitor<HangFireServiceSettings>>().CurrentValue;
-
-            // Setting recurring job using hang fire
-            RecurringJob.AddOrUpdate<ICountEmployeeDataJob>(nameof(ICountEmployeeDataJob.CountEmployeeDataAsync), s => s.CountEmployeeDataAsync(hangFireServiceSettings.FilePath), hangFireServiceSettings.CronExpression);
+            ExecuteRecurringJob(hangFireServiceSettings);
 
             app.Run();
+        }
+
+        // Setting recurring job using hang fire for get employee count
+        private static void ExecuteRecurringJob(IOptionsMonitor<HangFireServiceSettings> hangFireServiceSettings)
+        {
+            RecurringJob.AddOrUpdate<ICountEmployeeDataJob>(nameof(ICountEmployeeDataJob.CountEmployeeDataAsync), s => s.CountEmployeeDataAsync(hangFireServiceSettings.CurrentValue.FilePath), hangFireServiceSettings.CurrentValue.CronExpression);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using HangFireServiceAPI.Models.Config;
-using HangFireServiceAPI.Repositories;
-using Microsoft.Extensions.Options;
+﻿using HangFireServiceAPI.Repositories;
 
 namespace HangFireServiceAPI.BackgroundTasks
 {
