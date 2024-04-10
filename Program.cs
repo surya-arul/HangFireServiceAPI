@@ -77,7 +77,7 @@ namespace HangFireServiceAPI
 
             app.UseHangfireDashboard("/hangfire-dashboard");
 
-            // Get the cron expression from configuration
+            // Get the hang fire settings from configuration file
             var hangFireServiceSettings = app.Services.GetRequiredService<IOptionsMonitor<HangFireServiceSettings>>().CurrentValue;
 
             // Setting recurring job using hang fire
